@@ -1,0 +1,19 @@
+{
+  "name": "clonernews",
+  "version": "1.0.0",
+  "description": "A HackerNews UI clone using the official HN Firebase REST API",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0",
+    "jsdom": "^24.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  }
+}
