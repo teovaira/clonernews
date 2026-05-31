@@ -6,6 +6,50 @@ import { openComments } from './comments.js';
 import { PAGE_SIZE } from '../constants.js';
 
 /**
+ * Loads the next PAGE_SIZE items and appends them to #feed.
+ * @returns {Promise<void>}
+ */
+export async function loadNextPage() {
+  const state = getState();
+
+  // One page in flight at a time. Without this guard, a burst of sentinel
+  // intersections would fire overlapping fetches and spam the API.
+  if (state.loading) return;
+  if (state.loadedCount >= state.allIds.length) return;
+
+  const feedAtStart = state.currentFeed;
+  const start = state.loadedCount;
+  const nextIds = state.allIds.slice(start, start + PAGE_SIZE);
+
+  setState({ loading: true });
+  let items = [];
+  try {
+    items = await getItems(nextIds);
+  } catch {
+    // If the whole batch rejects we still must release the lock in `finally`,
+    // otherwise the feed would be permanently stuck.
+    items = [];
+  } finally {
+    setState({ loading: false });
+  }
+
+  // Race guard: discard results if the user switched feeds mid-fetch.
+  if (getState().currentFeed !== feedAtStart) return;
+
+  const feed = document.getElementById('feed');
+  if (feed) {
+    items.forEach((item, i) => {
+      // Rank is 1-based and continues across pages so numbering stays stable.
+      feed.appendChild(renderStoryItem(item, start + i + 1));
+    });
+  }
+
+  // Advance by the page span, not items.length: getItems may have filtered
+  // deleted entries, but those ids are still consumed from allIds.
+  setState({ loadedCount: start + nextIds.length });
+}
+
+/**
  * Creates and returns a DOM element for one story/job/poll/ask/show item.
  * SYNCHRONOUS — returns the card skeleton immediately; poll options fill in
  * later so a slow poll fetch never blocks the rest of the feed from rendering.
@@ -83,4 +127,21 @@ export function renderStoryItem(item, rank) {
   card.appendChild(commentsBtn);
 
   return card;
+}
+
+/**
+ * Makes #live-banner visible and announces how many items changed.
+ * @param {UpdatePayload} payload
+ * @returns {void}
+ */
+export function showUpdateBanner(payload) {
+  const banner = document.getElementById('live-banner');
+  if (!banner) return;
+  const text = document.getElementById('live-banner-text');
+  if (text) {
+    const count = payload?.count ?? 0;
+    // Pluralise so the message reads naturally for a single update too.
+    text.textContent = `${count} new or updated item${count === 1 ? '' : 's'} — click to refresh`;
+  }
+  banner.classList.remove('hidden');
 }
