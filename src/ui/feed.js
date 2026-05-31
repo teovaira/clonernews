@@ -82,6 +82,17 @@ export async function switchFeed(feedType) {
   resetFeed();
   setState({ currentFeed: feedType });
 
+  // Move aria-current to the chosen tab now (before the await) so the active
+  // highlight and the screen-reader "current page" state track the click
+  // immediately, not after the network round-trip.
+  document.querySelectorAll('.feed-tab').forEach((tab) => {
+    if (tab.dataset.feed === feedType) {
+      tab.setAttribute('aria-current', 'page');
+    } else {
+      tab.removeAttribute('aria-current');
+    }
+  });
+
   const feed = document.getElementById('feed');
   if (feed) feed.innerHTML = '';
 
