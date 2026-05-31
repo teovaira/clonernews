@@ -15,10 +15,27 @@ export function initFeed() {
   // One delegated listener on the nav rather than one per tab: keeps the
   // wiring intact even if the tab markup is regenerated.
   const nav = document.getElementById('feed-nav');
+  const navToggle = document.getElementById('nav-toggle');
+
+  // Hamburger drives the mobile nav purely through aria-expanded: the CSS
+  // sibling selector reveals the menu, so the accessible state IS the visual
+  // state — they can't drift apart.
+  if (navToggle) {
+    navToggle.addEventListener('click', () => {
+      const open = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', String(!open));
+    });
+  }
+
   if (nav) {
     nav.addEventListener('click', (e) => {
       const tab = e.target.closest('.feed-tab');
-      if (tab) switchFeed(tab.dataset.feed);
+      if (tab) {
+        switchFeed(tab.dataset.feed);
+        // Collapse the menu after a choice so it doesn't stay covering the
+        // feed on mobile.
+        if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+      }
     });
   }
 
