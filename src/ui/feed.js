@@ -6,6 +6,56 @@ import { openComments } from './comments.js';
 import { PAGE_SIZE } from '../constants.js';
 
 /**
+ * Entry point. Call once on DOMContentLoaded.
+ * Sets up nav listeners, Intersection Observer on #scroll-sentinel,
+ * listens for 'hn:update' on document, calls startLiveUpdates().
+ * @returns {void}
+ */
+export function initFeed() {
+  // One delegated listener on the nav rather than one per tab: keeps the
+  // wiring intact even if the tab markup is regenerated.
+  const nav = document.getElementById('feed-nav');
+  if (nav) {
+    nav.addEventListener('click', (e) => {
+      const tab = e.target.closest('.feed-tab');
+      if (tab) switchFeed(tab.dataset.feed);
+    });
+  }
+
+  // The banner is the only signal that data changed; clicking it re-runs the
+  // current feed so the user pulls new items deliberately — we never silently
+  // reorder the list under their scroll position.
+  const banner = document.getElementById('live-banner');
+  if (banner) {
+    banner.addEventListener('click', () => {
+      banner.classList.add('hidden');
+      switchFeed(getState().currentFeed);
+    });
+  }
+
+  // Infinite scroll is driven by the user reaching the sentinel, which is what
+  // satisfies "do not load all posts at once".
+  const sentinel = document.getElementById('scroll-sentinel');
+  if (sentinel && typeof IntersectionObserver !== 'undefined') {
+    const observer = new IntersectionObserver((entries) => {
+      // loadNextPage has its own in-flight guard, so repeated intersections
+      // are harmless and need no extra debounce here.
+      if (entries.some((entry) => entry.isIntersecting)) loadNextPage();
+    });
+    observer.observe(sentinel);
+  }
+
+  // live.js owns polling and only emits the event; feed.js reacts to it.
+  // Keeping the listener here preserves the one-way data flow.
+  document.addEventListener('hn:update', (e) => showUpdateBanner(e.detail));
+
+  startLiveUpdates();
+
+  // Render the default feed so the page is never empty on first paint.
+  switchFeed(getState().currentFeed);
+}
+
+/**
  * Switches to feedType. Resets state, clears #feed, fetches the new id list,
  * and renders the first page.
  * @param {'top'|'new'|'ask'|'show'|'job'} feedType
