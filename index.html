@@ -40,6 +40,19 @@
       </nav>
     </header>
 
-    <main id="main" class="layout"></main>
+    <main id="main" class="layout">
+      <!-- role=status + aria-live=polite announces new-item counts to screen
+           readers without yanking focus. Starts hidden; showUpdateBanner()
+           removes .hidden. A button (not a div) so it is keyboard-operable —
+           the whole banner refreshes the current feed when activated. -->
+      <button
+        id="live-banner"
+        class="live-banner hidden"
+        role="status"
+        aria-live="polite"
+      >
+        <span id="live-banner-text"></span>
+      </button>
+    </main>
   </body>
 </html>
