@@ -1,0 +1,34 @@
+/* Design tokens live on :root so every later rule references a named colour or
+   spacing step instead of a magic value — one place to retune the palette. */
+:root {
+  --hn-orange: #ff6600;
+  --hn-beige: #f6f6ef; /* classic HN page background */
+  --surface: #ffffff;
+  --border: #e0e0d8;
+  --text: #1a1a1a;
+  --text-muted: #666666;
+  --link: #1a4d8f; /* darker than HN's grey link for AA contrast on beige */
+  --link-visited: #6b4d8f;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+
+  --radius: 4px;
+  --header-h: 3rem;
+  --max-width: 56rem;
+}
+
+/* Minimal modern reset: predictable box model and no default margins so the
+   spacing tokens above are the single source of layout rhythm. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
