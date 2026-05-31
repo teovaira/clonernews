@@ -92,5 +92,9 @@
       <!-- Root the recursive comment tree renders into. -->
       <div id="comments-container" class="comments-container"></div>
     </aside>
+
+    <!-- The single entry module. type=module defers execution until the DOM is
+         parsed, so app.js can safely bind initFeed on DOMContentLoaded. -->
+    <script type="module" src="/src/app.js"></script>
   </body>
 </html>
