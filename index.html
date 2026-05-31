@@ -11,7 +11,20 @@
          the feed; visually hidden until focused. -->
     <a class="skip-link" href="#feed">Skip to content</a>
 
-    <header class="site-header"></header>
+    <header class="site-header">
+      <a class="brand" href="/">CloneHN</a>
+
+      <!-- aria-label distinguishes this from any other nav landmark; the feed
+           handler in feed.js delegates clicks via the .feed-tab + data-feed
+           pair, so those two contracts must stay on every tab. -->
+      <nav id="feed-nav" class="feed-nav" aria-label="Story feeds">
+        <button class="feed-tab" data-feed="top" aria-current="page">Top</button>
+        <button class="feed-tab" data-feed="new">New</button>
+        <button class="feed-tab" data-feed="ask">Ask</button>
+        <button class="feed-tab" data-feed="show">Show</button>
+        <button class="feed-tab" data-feed="job">Jobs</button>
+      </nav>
+    </header>
 
     <main id="main" class="layout"></main>
   </body>
