@@ -14,6 +14,20 @@
     <header class="site-header">
       <a class="brand" href="/">CloneHN</a>
 
+      <!-- Shown only on narrow screens (CSS). aria-controls + aria-expanded let
+           assistive tech announce that this button opens the feed nav and
+           whether it is currently open; the bars span is decorative, so the
+           accessible name comes from aria-label, not the glyph. -->
+      <button
+        id="nav-toggle"
+        class="nav-toggle"
+        aria-label="Show feeds"
+        aria-controls="feed-nav"
+        aria-expanded="false"
+      >
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+
       <!-- aria-label distinguishes this from any other nav landmark; the feed
            handler in feed.js delegates clicks via the .feed-tab + data-feed
            pair, so those two contracts must stay on every tab. -->
