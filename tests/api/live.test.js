@@ -38,7 +38,7 @@ describe('startLiveUpdates', () => {
     document.addEventListener('hn:update', listener);
 
     startLiveUpdates();
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(5000);
 
     expect(listener).not.toHaveBeenCalled();
     document.removeEventListener('hn:update', listener);
@@ -54,7 +54,8 @@ describe('startLiveUpdates', () => {
     document.addEventListener('hn:update', listener);
 
     startLiveUpdates();
-    await vi.runAllTimersAsync();
+    await vi.advanceTimersByTimeAsync(5000);
+    await vi.advanceTimersByTimeAsync(5000);
 
     expect(listener).not.toHaveBeenCalled();
     document.removeEventListener('hn:update', listener);
