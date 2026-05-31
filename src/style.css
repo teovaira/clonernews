@@ -239,6 +239,63 @@ button {
   background: #ffe7c2;
 }
 
+/* Constrain line length: long feeds are far more readable capped at ~56rem and
+   centered than stretched across a wide monitor. */
+.feed {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+.story-item {
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-3);
+}
+
+.story-title {
+  /* Titles are the primary scan target; only slightly larger than body so the
+     list stays dense in the HN spirit. */
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.story-title a {
+  text-decoration: none;
+}
+
+.story-title a:hover {
+  text-decoration: underline;
+}
+
+.type-badge {
+  display: inline-block;
+  margin-bottom: var(--space-1);
+  padding: 0 var(--space-2);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  background: var(--text-muted);
+  border-radius: var(--radius);
+}
+
+/* Per-type tinting is a redundant cue layered on top of the always-present text
+   label, so colour-blind users never lose the type information. */
+.type-badge[data-type="story"] { background: #1a4d8f; }
+.type-badge[data-type="job"] { background: #2e7d32; }
+.type-badge[data-type="poll"] { background: #6a1b9a; }
+
+.story-meta {
+  margin-top: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+
 
 
 
