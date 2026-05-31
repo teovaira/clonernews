@@ -141,7 +141,9 @@ export function renderStoryItem(item, rank) {
   const badge = document.createElement('span');
   badge.className = 'type-badge';
   // The badge is the accessible label of the post type, so we render the type
-  // as text rather than relying on a colour-only cue.
+  // as text rather than relying on a colour-only cue. data-type drives the
+  // per-type tint in CSS — the colour is purely a redundant visual layer.
+  badge.dataset.type = item.type;
   badge.textContent = item.type;
   card.appendChild(badge);
 
