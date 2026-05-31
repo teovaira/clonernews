@@ -216,6 +216,30 @@ button {
   }
 }
 
+/* Full-width call-to-action strip. Sticky just below the header so a user who
+   has scrolled deep into the feed still sees that new data arrived. */
+.live-banner {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 40;
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  text-align: center;
+  /* Darker amber than the header so the banner reads as a distinct alert
+     rather than blending into the orange bar. */
+  background: #fff3e0;
+  color: #8a4b00;
+  border-bottom: 1px solid var(--hn-orange);
+  cursor: pointer;
+}
+
+.live-banner:hover {
+  background: #ffe7c2;
+}
+
+
 
 
 
