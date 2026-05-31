@@ -156,6 +156,67 @@ button {
   font-weight: 700;
 }
 
+/* Hidden on desktop; the media query below reveals it on narrow screens. */
+.nav-toggle {
+  display: none;
+  margin-left: auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* The three-line glyph is pure CSS (center bar + two pseudo-elements) so no
+   icon asset is needed. */
+.nav-toggle-bars,
+.nav-toggle-bars::before,
+.nav-toggle-bars::after {
+  display: block;
+  width: 1.25rem;
+  height: 2px;
+  background: #ffffff;
+  margin: 0 auto;
+  content: "";
+}
+
+.nav-toggle-bars::before {
+  transform: translateY(-6px);
+}
+
+.nav-toggle-bars::after {
+  transform: translateY(4px);
+}
+
+@media (max-width: 40rem) {
+  .nav-toggle {
+    display: block;
+  }
+
+  /* Collapse the tab row into a dropdown panel anchored under the header. */
+  .feed-nav {
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: var(--hn-orange);
+    padding: var(--space-2);
+    /* Hidden until the toggle reports expanded; driving visibility off the
+       button's aria-expanded keeps the visual and accessible state in sync. */
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded="true"] + .feed-nav {
+    display: flex;
+  }
+
+  .feed-tab {
+    text-align: left;
+  }
+}
+
+
 
 
 
