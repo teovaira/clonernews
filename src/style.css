@@ -60,3 +60,47 @@ button {
   color: inherit;
 }
 
+/* Shared toggle used by feed.js and comments.js to show/hide the banner and
+   drawer. !important so it always wins over a component's display rule. */
+.hidden {
+  display: none !important;
+}
+
+/* Removes content visually while leaving it in the accessibility tree — for
+   labels that sighted users get from context but screen readers still need. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip-link sits off-screen until focused, then drops into view so keyboard
+   users can jump straight to the feed. */
+.skip-link {
+  position: absolute;
+  left: var(--space-2);
+  top: -3rem;
+  z-index: 100;
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius);
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: var(--space-2);
+}
+
+/* A single, consistent focus ring for every keyboard-focused control.
+   :focus-visible (not :focus) so mouse clicks don't show the ring. */
+:focus-visible {
+  outline: 2px solid var(--hn-orange);
+  outline-offset: 2px;
+}
+
+
