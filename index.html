@@ -53,6 +53,15 @@
       >
         <span id="live-banner-text"></span>
       </button>
+
+      <!-- role=feed is the ARIA pattern for a scrollable stream of articles;
+           loadNextPage() appends .story-item cards here. -->
+      <div id="feed" class="feed" role="feed" aria-busy="false"></div>
+
+      <!-- Layout-only trip wire: initFeed observes it with IntersectionObserver
+           to page in more posts. Hidden from the accessibility tree because it
+           carries no content of its own. -->
+      <div id="scroll-sentinel" aria-hidden="true"></div>
     </main>
   </body>
 </html>
