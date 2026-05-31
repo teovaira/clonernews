@@ -6,6 +6,32 @@ import { openComments } from './comments.js';
 import { PAGE_SIZE } from '../constants.js';
 
 /**
+ * Switches to feedType. Resets state, clears #feed, fetches the new id list,
+ * and renders the first page.
+ * @param {'top'|'new'|'ask'|'show'|'job'} feedType
+ * @returns {Promise<void>}
+ */
+export async function switchFeed(feedType) {
+  resetFeed();
+  setState({ currentFeed: feedType });
+
+  const feed = document.getElementById('feed');
+  if (feed) feed.innerHTML = '';
+
+  const ids = await getStoryIds(feedType);
+
+  // Race guard: the await yielded, so the user may have clicked another tab.
+  // If the current feed changed, this fetch is stale — drop it.
+  if (getState().currentFeed !== feedType) return;
+
+  // Store ids as-is: per the Ordering Rule the HN feed order is already
+  // newest-first (or correctly ranked for 'top'). Re-sorting would require
+  // fetching every item, which is exactly what we must avoid.
+  setState({ allIds: ids });
+  await loadNextPage();
+}
+
+/**
  * Loads the next PAGE_SIZE items and appends them to #feed.
  * @returns {Promise<void>}
  */
