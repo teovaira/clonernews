@@ -63,5 +63,34 @@
            carries no content of its own. -->
       <div id="scroll-sentinel" aria-hidden="true"></div>
     </main>
+
+    <!-- Right-side comment drawer. Every id below is the frozen contract that
+         comments.js (Vasiliki) populates — they must never change. role=dialog
+         + aria-modal mark it as an overlay; aria-labelledby names it by its
+         story title for screen readers. Starts hidden. -->
+    <aside
+      id="comment-panel"
+      class="comment-panel hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="comment-title"
+    >
+      <header class="comment-panel-header">
+        <h2 id="comment-title" class="comment-title"></h2>
+        <button id="close-comments" class="close-comments" aria-label="Close comments">
+          &times;
+        </button>
+      </header>
+
+      <div id="comment-meta" class="comment-meta"></div>
+      <a id="comment-original-link" class="comment-original-link" href="#"></a>
+      <div id="comment-text" class="comment-text"></div>
+
+      <!-- Spinner shown while comments load; comments.js toggles it. -->
+      <div id="comment-loader" class="comment-loader hidden" aria-hidden="true"></div>
+
+      <!-- Root the recursive comment tree renders into. -->
+      <div id="comments-container" class="comments-container"></div>
+    </aside>
   </body>
 </html>
