@@ -389,6 +389,15 @@ button {
   margin-bottom: var(--space-4);
 }
 
+/* On phones a 28rem drawer would leave almost no reading width, so it takes the
+   full viewport instead. */
+@media (max-width: 40rem) {
+  .comment-panel {
+    width: 100%;
+  }
+}
+
+
 
 
 
