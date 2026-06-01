@@ -47,6 +47,18 @@ describe("timeAgo", () => {
 
     expect(timeAgo(now - 86400)).toBe("1d ago")
   })
+
+  test("returns just now for zero timestamp", () => {
+    const now = Math.floor(Date.now() / 1000)
+
+    expect(timeAgo(now)).toBe("just now")
+  })
+
+  test("returns just now for future timestamp", () => {
+    const now = Math.floor(Date.now() / 1000)
+
+    expect(timeAgo(now + 60)).toBe("just now")
+  })
 })
 
 describe("parseDomain", () => {
@@ -72,5 +84,11 @@ describe("parseDomain", () => {
 
   test("returns null for malformed url", () => {
     expect(parseDomain("not-a-url")).toBe(null)
+  })
+
+  test("does not strip www from non-leading position", () => {
+    expect(
+      parseDomain("https://news.www.example.com")
+    ).toBe("news.www.example.com")
   })
 })
