@@ -63,4 +63,20 @@ describe("sanitiseHTML", () => {
   test("handles empty input", () => {
     expect(sanitiseHTML("")).toBe("")
   })
+
+  test("strips disallowed tag but keeps its text content", () => {
+    const result = sanitiseHTML("<div>Hello</div>")
+
+    expect(result).not.toContain("<div>")
+    expect(result).toContain("Hello")
+  })
+
+  test("adds target blank and rel to anchor without href", () => {
+    const raw = "<a>click</a>"
+
+    const result = sanitiseHTML(raw)
+
+    expect(result).toContain('target="_blank"')
+    expect(result).toContain('rel="noopener noreferrer"')
+  })
 })
