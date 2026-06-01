@@ -2,6 +2,7 @@ export function timeAgo(unixTs) {
     const current = Date.now()
     const sec = Math.floor(current / 1000)
     const diff = sec - unixTs
+    if (diff <= 0) return "just now"
     if (diff < 60) return "just now"
     if (60 <= diff && diff < 3600) {
         const minutes = diff / 60
