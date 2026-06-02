@@ -34,3 +34,23 @@ export async function getItems(ids) {
 export async function getItemsKeepOrder(ids) {
   return Promise.all(ids.map((id) => getItem(id)));
 }
+
+/**
+ * @param {'top'|'new'|'ask'|'show'|'job'} feed
+ * @returns {Promise<number[]>}  — ordered by HN (newest first for 'new', ranked for others)
+ */
+export async function getStoryIds(feed) {
+  const endpoints = {
+    top: 'topstories',
+    new: 'newstories',
+    ask: 'askstories',
+    show: 'showstories',
+    job: 'jobstories',
+  };
+  const endpoint = endpoints[feed];
+
+  if (!endpoint) return [];
+
+  const ids = await get(`${HN_BASE}/${endpoint}.json`);
+  return Array.isArray(ids) ? ids : [];
+}
