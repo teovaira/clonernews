@@ -23,3 +23,14 @@ export async function getItems(ids) {
   const items = await Promise.all(ids.map((id) => getItem(id)));
   return items.filter((item) => item !== null);
 }
+
+/**
+ * Same as getItems but KEEPS nulls in place (does not filter).
+ * Comments need this so deleted comments keep their thread position
+ * and can render a "[deleted]" placeholder. Order matches input ids.
+ * @param {number[]} ids
+ * @returns {Promise<(Item|null)[]>}
+ */
+export async function getItemsKeepOrder(ids) {
+  return Promise.all(ids.map((id) => getItem(id)));
+}
