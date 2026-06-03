@@ -112,6 +112,10 @@ describe('renderStoryItem', () => {
   });
 
   it('renders the correct type badge for story, job and poll', () => {
+    // The poll branch fires getPollOptions().then(...) fire-and-forget, so the
+    // mock must return a promise even when we only care about the badge.
+    getPollOptions.mockResolvedValue([]);
+
     const story = renderStoryItem({ id: 1, type: 'story', title: 'S', by: 'a', time: 1 }, 1);
     const job = renderStoryItem({ id: 2, type: 'job', title: 'J', by: 'b', time: 1 }, 2);
     const poll = renderStoryItem({ id: 3, type: 'poll', title: 'P', by: 'c', time: 1, parts: [] }, 3);
