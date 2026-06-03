@@ -264,14 +264,27 @@ export function renderStoryItem(item, rank) {
  * @param {UpdatePayload} payload
  * @returns {void}
  */
-export function showUpdateBanner(payload) {
+export async function showUpdateBanner(payload) {
   const banner = document.getElementById('live-banner');
   if (!banner) return;
   const text = document.getElementById('live-banner-text');
-  if (text) {
-    const count = payload?.count ?? 0;
-    // Pluralise so the message reads naturally for a single update too.
-    text.textContent = `${count} new or updated item${count === 1 ? '' : 's'} — click to refresh`;
-  }
+  if (!text) return;
+
+  const count = payload?.count ?? 0;
+  const newIds = payload?.newIds ?? [];
+
+  // Show count immediately so the banner appears without waiting for a fetch.
+  text.textContent = `${count} new or updated item${count === 1 ? '' : 's'} — click to refresh`;
   banner.classList.remove('hidden');
+
+  // Then fetch the first changed item's title and refine the message so the
+  // user knows *which* post changed, satisfying the "certain post" audit item.
+  if (newIds.length > 0) {
+    const item = await getItems([newIds[0]]);
+    if (item[0]?.title) {
+      const rest = count - 1;
+      const suffix = rest > 0 ? ` and ${rest} other${rest === 1 ? '' : 's'}` : '';
+      text.textContent = `"${item[0].title}"${suffix} updated — click to refresh`;
+    }
+  }
 }
