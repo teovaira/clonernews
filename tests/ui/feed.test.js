@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('../../src/api/items.js', () => ({
   getStoryIds: vi.fn(),
   getItems: vi.fn(),
+  getItem: vi.fn(),
 }));
 
 vi.mock('../../src/api/polls.js', () => ({
@@ -20,6 +21,7 @@ vi.mock('../../src/api/live.js', () => ({
 
 vi.mock('../../src/ui/comments.js', () => ({
   openComments: vi.fn(),
+  closeComments: vi.fn(),
 }));
 
 // The store mock keeps a real mutable object so the loading/loadedCount guards
@@ -45,12 +47,14 @@ vi.mock('../../src/store/store.js', () => {
       state.loadedCount = 0;
       state.loading = false;
     }),
+    getCached: vi.fn(() => null),
+    cacheItem: vi.fn(),
     // Test-only hook so each test starts from a known state.
     __resetStore: reset,
   };
 });
 
-import { getStoryIds, getItems } from '../../src/api/items.js';
+import { getStoryIds, getItems, getItem } from '../../src/api/items.js';
 import { getPollOptions } from '../../src/api/polls.js';
 import { startLiveUpdates } from '../../src/api/live.js';
 import { openComments } from '../../src/ui/comments.js';
@@ -100,6 +104,9 @@ beforeEach(() => {
     disconnect() {}
     unobserve() {}
   };
+  // getItem returns null by default so showUpdateBanner's async title-lookup
+  // resolves cleanly without throwing in tests that don't care about it.
+  getItem.mockResolvedValue(null);
 });
 
 describe('renderStoryItem', () => {
