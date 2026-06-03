@@ -2,7 +2,7 @@ import { getStoryIds, getItems } from '../api/items.js';
 import { getPollOptions } from '../api/polls.js';
 import { getState, setState, resetFeed } from '../store/store.js';
 import { startLiveUpdates } from '../api/live.js';
-import { openComments } from './comments.js';
+import { openComments, closeComments } from './comments.js';
 import { PAGE_SIZE } from '../constants.js';
 
 /**
@@ -61,6 +61,20 @@ export function initFeed() {
     });
     observer.observe(sentinel);
   }
+
+  // Close button in the comment drawer — wired here because feed.js owns the
+  // DOM setup; comments.js owns the logic but not the event binding.
+  const closeBtn = document.getElementById('close-comments');
+  if (closeBtn) closeBtn.addEventListener('click', closeComments);
+
+  // Click outside the panel to dismiss it — only when the panel is visible,
+  // and only when the click lands outside the panel itself.
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('comment-panel');
+    if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target)) {
+      closeComments();
+    }
+  });
 
   // live.js owns polling and only emits the event; feed.js reacts to it.
   // Keeping the listener here preserves the one-way data flow.
