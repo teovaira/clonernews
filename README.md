@@ -72,16 +72,16 @@ clonernews/
 │   ├── ui/
 │   │   ├── feed.js            # feed rendering, paging, nav, live banner
 │   │   └── comments.js        # comment tree rendering and the comment drawer
-│   └── utils/
-│       ├── time.js            # relative time + URL domain helpers
-│       └── sanitise.js        # HTML allowlist sanitiser
+│   ├── utils/
+│   │   ├── time.js            # relative time + URL domain helpers
+│   │   └── sanitise.js        # HTML allowlist sanitiser
+│   └── style.css              # styles (responsive, accessible)
 ├── tests/
 │   ├── api/                    # client, items, polls, live tests
 │   ├── store/                  # store tests
 │   ├── ui/                     # feed, comments tests
 │   └── utils/                  # time, sanitise tests
 ├── index.html                  # markup + shared DOM contract
-├── src/style.css               # styles (responsive, accessible)
 ├── vite.config.js              # Vite + Vitest config
 ├── package.json
 ├── package-lock.json
@@ -95,7 +95,7 @@ clonernews/
 
 - Vanilla ES modules — no UI framework.
 - Vite for the dev server and bundling.
-- Vitest + jsdom for unit and integration tests.
+- Vitest + jsdom for unit tests.
 - The official Hacker News Firebase REST API.
 
 ## Contributing
