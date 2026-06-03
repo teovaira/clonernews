@@ -4,9 +4,9 @@ This document describes how the CloneHN team works. Follow it for every change.
 
 ## Workflow rules
 
-1. **Stay in your lane.** Each member owns a defined set of files (see
-   `ROADMAP.md`). Don't edit another member's files; if a shared contract needs
-   to change, both owners must agree first.
+1. **Stay in your lane.** Each member owns a defined set of files. Don't edit
+   another member's files; if a shared contract needs to change, both owners
+   must agree first.
 2. **TDD always.** Write the test first, watch it fail, then write the
    implementation. One function at a time.
 3. **Conventional commits.** Every commit message starts with a type:
@@ -20,7 +20,7 @@ This document describes how the CloneHN team works. Follow it for every change.
 ## Getting set up
 
 ```bash
-git clone https://platform.zone01.gr/git/ckotsalas/clonernews.git
+git clone <repo-url>
 cd clonernews
 npm install
 npm test          # confirm a clean baseline before you start
