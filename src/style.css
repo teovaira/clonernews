@@ -389,6 +389,33 @@ button {
   margin-bottom: var(--space-4);
 }
 
+/* Individual comment nodes rendered by renderComment(). Each comment gets a
+   top border so threads are visually separated at every depth level. */
+.comment {
+  border-top: 1px solid var(--border);
+  padding: var(--space-2) 0;
+  font-size: 0.875rem;
+}
+
+.comment--deleted {
+  color: var(--meta);
+  font-style: italic;
+}
+
+.comment__header {
+  font-size: 0.75rem;
+  color: var(--meta);
+  margin-bottom: var(--space-1);
+}
+
+.comment__body {
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.comment__body p { margin: 0 0 var(--space-1); }
+.comment__body pre { overflow-x: auto; }
+
 /* On phones a 28rem drawer would leave almost no reading width, so it takes the
    full viewport instead. */
 @media (max-width: 40rem) {
