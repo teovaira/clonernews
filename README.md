@@ -30,7 +30,7 @@ live update notifications.
 
 ```bash
 # 1. Clone the repository
-git clone https://platform.zone01.gr/git/ckotsalas/clonernews.git
+git clone <repo-url>
 cd clonernews
 
 # 2. Install dependencies
@@ -48,8 +48,7 @@ Open the printed local URL in your browser.
 | ------------------- | --------------------------------------------- |
 | `npm run dev`       | Start the Vite dev server with hot reload     |
 | `npm run build`     | Produce a production build in `dist/`         |
-| `npm run preview`   | Serve the production build locally            |
-| `npm test`          | Run the unit + integration test suite once    |
+| `npm test`          | Run the full test suite once                  |
 | `npm run test:watch`| Run the test suite in watch mode              |
 | `npm run coverage`  | Run tests and report coverage                 |
 
@@ -80,8 +79,7 @@ clonernews/
 │   ├── api/                    # client, items, polls, live tests
 │   ├── store/                  # store tests
 │   ├── ui/                     # feed, comments tests
-│   ├── utils/                  # time, sanitise tests
-│   └── integration/            # cross-layer event/flow tests
+│   └── utils/                  # time, sanitise tests
 ├── index.html                  # markup + shared DOM contract
 ├── src/style.css               # styles (responsive, accessible)
 ├── vite.config.js              # Vite + Vitest config
