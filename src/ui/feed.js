@@ -1,6 +1,6 @@
-import { getStoryIds, getItems } from '../api/items.js';
+import { getStoryIds, getItems, getItem } from '../api/items.js';
 import { getPollOptions } from '../api/polls.js';
-import { getState, setState, resetFeed } from '../store/store.js';
+import { getState, setState, resetFeed, getCached, cacheItem } from '../store/store.js';
 import { startLiveUpdates } from '../api/live.js';
 import { openComments, closeComments } from './comments.js';
 import { PAGE_SIZE } from '../constants.js';
@@ -65,7 +65,10 @@ export function initFeed() {
   // Close button in the comment drawer — wired here because feed.js owns the
   // DOM setup; comments.js owns the logic but not the event binding.
   const closeBtn = document.getElementById('close-comments');
-  if (closeBtn) closeBtn.addEventListener('click', closeComments);
+  if (closeBtn) closeBtn.addEventListener('click', () => {
+    closeComments();
+    document.getElementById('comment-update-banner')?.classList.add('hidden');
+  });
 
   // Click outside the panel to dismiss it — only when the panel is visible,
   // and only when the click lands outside the panel itself.
@@ -73,12 +76,33 @@ export function initFeed() {
     const panel = document.getElementById('comment-panel');
     if (panel && !panel.classList.contains('hidden') && !panel.contains(e.target)) {
       closeComments();
+      document.getElementById('comment-update-banner')?.classList.add('hidden');
     }
   });
 
+  // Wire the comment panel's reload button so the user can refresh comments
+  // on the specific post that was flagged as updated.
+  const commentUpdateReload = document.getElementById('comment-update-reload');
+  if (commentUpdateReload) {
+    commentUpdateReload.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const { openStoryId } = getState();
+      document.getElementById('comment-update-banner')?.classList.add('hidden');
+      if (openStoryId) openComments(openStoryId);
+    });
+  }
+
   // live.js owns polling and only emits the event; feed.js reacts to it.
   // Keeping the listener here preserves the one-way data flow.
-  document.addEventListener('hn:update', (e) => showUpdateBanner(e.detail));
+  document.addEventListener('hn:update', (e) => {
+    showUpdateBanner(e.detail);
+    // If the currently open story is among the updated IDs, notify the user
+    // inside the panel — this is the "certain post" the audit asks about.
+    const { openStoryId } = getState();
+    if (openStoryId && e.detail?.newIds?.includes(openStoryId)) {
+      document.getElementById('comment-update-banner')?.classList.remove('hidden');
+    }
+  });
 
   startLiveUpdates();
 
@@ -260,11 +284,13 @@ export function renderStoryItem(item, rank) {
 }
 
 /**
- * Makes #live-banner visible and announces how many items changed.
+ * Makes #live-banner visible and announces which post changed.
+ * Shows immediately with a count, then resolves the story title and updates
+ * the message — so the banner is always consistent once the title loads.
  * @param {UpdatePayload} payload
  * @returns {void}
  */
-export async function showUpdateBanner(payload) {
+export function showUpdateBanner(payload) {
   const banner = document.getElementById('live-banner');
   if (!banner) return;
   const text = document.getElementById('live-banner-text');
@@ -273,18 +299,51 @@ export async function showUpdateBanner(payload) {
   const count = payload?.count ?? 0;
   const newIds = payload?.newIds ?? [];
 
-  // Show count immediately so the banner appears without waiting for a fetch.
-  text.textContent = `${count} new or updated item${count === 1 ? '' : 's'} — click to refresh`;
+  // Show immediately — accurate language: these are updates, not new posts.
+  const countMsg = `${count} updated item${count === 1 ? '' : 's'} — click to refresh`;
+  text.textContent = countMsg;
   banner.classList.remove('hidden');
 
-  // Then fetch the first changed item's title and refine the message so the
-  // user knows *which* post changed, satisfying the "certain post" audit item.
-  if (newIds.length > 0) {
-    const item = await getItems([newIds[0]]);
-    if (item[0]?.title) {
-      const rest = count - 1;
-      const suffix = rest > 0 ? ` and ${rest} other${rest === 1 ? '' : 's'}` : '';
-      text.textContent = `"${item[0].title}"${suffix} updated — click to refresh`;
+  // Resolve a story title for the first changed item. Most newIds are comment
+  // IDs — walk up via `parent` to find the story title. Once found, update the
+  // banner to name the specific post so the user knows what changed.
+  if (newIds.length === 0) return;
+
+  resolveStoryTitle(newIds[0]).then(title => {
+    if (!title) return;
+    const rest = count - 1;
+    const suffix = rest > 0 ? ` (+${rest} more)` : '';
+    text.textContent = `"${title}"${suffix} updated — click to refresh`;
+  });
+}
+
+/**
+ * Resolves the story title for a given item id.
+ * If the item is a comment, walks up to its parent story.
+ * Returns null if the title cannot be determined.
+ * @param {number} id
+ * @returns {Promise<string|null>}
+ */
+async function resolveStoryTitle(id) {
+  let currentId = id;
+
+  // Walk up the parent chain until we find an item with a title (story/poll/job).
+  // Comments can be nested many levels deep, so one level up is not enough.
+  for (let depth = 0; depth < 6; depth++) {
+    const cached = getCached(currentId);
+    if (cached?.title) return cached.title;
+
+    const item = await getItem(currentId);
+    if (!item) return null;
+
+    if (item.title) {
+      cacheItem(item.id, item);
+      return item.title;
     }
+
+    if (!item.parent) return null;
+    currentId = item.parent;
   }
+
+  return null;
 }
