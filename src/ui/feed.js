@@ -151,6 +151,13 @@ export async function loadNextPage() {
   // Advance by the page span, not items.length: getItems may have filtered
   // deleted entries, but those ids are still consumed from allIds.
   setState({ loadedCount: start + nextIds.length });
+
+  // If the whole page was deleted items, nothing was appended so the sentinel
+  // won't re-fire. Chain the next page automatically so the feed doesn't stall.
+  const updated = getState();
+  if (items.length === 0 && updated.loadedCount < updated.allIds.length) {
+    loadNextPage();
+  }
 }
 
 /**
