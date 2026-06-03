@@ -250,7 +250,10 @@ export function renderStoryItem(item, rank) {
   commentsBtn.textContent = `${count} comments`;
   // Pass the id directly: openComments must not scrape it back out of the DOM
   // (frozen contract with Vasiliki's comments.js).
-  commentsBtn.addEventListener('click', () => openComments(item.id));
+  // stopPropagation prevents the document-level click-outside listener from
+  // treating this button click as an "outside the panel" click and immediately
+  // closing the drawer the moment it opens.
+  commentsBtn.addEventListener('click', (e) => { e.stopPropagation(); openComments(item.id); });
   card.appendChild(commentsBtn);
 
   return card;
