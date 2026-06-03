@@ -389,6 +389,13 @@ button {
   margin-bottom: var(--space-4);
 }
 
+/* Needs explicit height so IntersectionObserver can reliably detect when it
+   enters and leaves the viewport — a zero-height element stays "intersecting"
+   permanently and never re-fires the callback on scroll. */
+#scroll-sentinel {
+  height: 1px;
+}
+
 /* Individual comment nodes rendered by renderComment(). Each comment gets a
    top border so threads are visually separated at every depth level. */
 .comment {
