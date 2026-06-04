@@ -1,5 +1,3 @@
-import { FEED_TYPES } from "../constants";
-
 let state = {
     currentFeed: 'top',
     allIds: [],
