@@ -340,10 +340,8 @@ async function resolveStoryTitle(id) {
     const item = await getItem(currentId);
     if (!item) return null;
 
-    if (item.title) {
-      cacheItem(item.id, item);
-      return item.title;
-    }
+    cacheItem(item.id, item);
+    if (item.title) return item.title;
 
     if (!item.parent) return null;
     currentId = item.parent;
