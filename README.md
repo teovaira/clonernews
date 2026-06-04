@@ -16,7 +16,8 @@ live update notifications.
   banner when items change; click it to refresh the current feed.
 - **Comment threads** — open any post to read its comments in a side drawer,
   newest first, with nested replies and correct parent attribution.
-- **Polls** — poll options render with their vote counts, sorted by score.
+- **Polls** —  dedicated Polls tab backed by the Algolia HN search API, with poll
+  options rendered with their vote counts, sorted by score.
 - **Throttled requests** — a concurrency-limited fetch queue avoids overloading
   the API.
 - **Responsive & accessible** — phone to desktop, with keyboard navigation,
@@ -96,7 +97,8 @@ clonernews/
 - Vanilla ES modules — no UI framework.
 - Vite for the dev server and bundling.
 - Vitest + jsdom for unit tests.
-- The official Hacker News Firebase REST API.
+- The official [Hacker News Firebase REST API](https://github.com/HackerNews/API).
+- The [Algolia HN search API](https://hn.algolia.com/api) for the Polls feed.
 
 ## Contributing
 
