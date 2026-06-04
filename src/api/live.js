@@ -10,6 +10,7 @@ async function poll() {
     if (!data || !Array.isArray(data.items)) return;
 
     const ids = data.items;
+    if (ids.length === 0) return;
     const maxId = Math.max(...ids);
 
     if (isFirstPoll) {
