@@ -235,7 +235,14 @@ export function renderStoryItem(item, rank) {
     link.textContent = item.title ?? '';
     title.appendChild(link);
   } else {
-    title.textContent = item.title ?? '';
+    // No external URL — make the title open the comments panel instead so
+    // polls, Ask HN and job posts are still clickable and feel consistent.
+    const span = document.createElement('span');
+    span.className = 'story-title-link';
+    span.style.cursor = 'pointer';
+    span.textContent = item.title ?? '';
+    span.addEventListener('click', (e) => { e.stopPropagation(); openComments(item.id); });
+    title.appendChild(span);
   }
   card.appendChild(title);
 
