@@ -42,6 +42,7 @@ export async function openComments(storyId) {
 
     if (story?.kids?.length) {
         const kids = await getItemsKeepOrder(story.kids)
+        kids.forEach(kid => { if (kid) cacheItem(kid.id, kid) })
         const sorted = [...kids].sort((a, b) => {
             if (!a) return 1
             if (!b) return -1
@@ -92,6 +93,7 @@ export function renderComment(item, depth) {
 
     if (item.kids?.length) {
         getItemsKeepOrder(item.kids).then(kids => {
+            kids.forEach(kid => { if (kid) cacheItem(kid.id, kid) })
             const sorted = [...kids].sort((a, b) => {
                 if (!a) return 1
                 if (!b) return -1
