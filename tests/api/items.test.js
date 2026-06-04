@@ -4,7 +4,7 @@ vi.mock('../../src/api/client.js', () => ({
   get: vi.fn(),
 }));
 
-import { HN_BASE } from '../../src/constants.js';
+import { HN_BASE, HN_SEARCH_BASE } from '../../src/constants.js';
 import { get } from '../../src/api/client.js';
 import {
   getItem,
@@ -86,6 +86,20 @@ describe('getStoryIds', () => {
 
     await expect(getStoryIds(feed)).resolves.toEqual([300, 200, 100]);
     expect(get).toHaveBeenCalledWith(`${HN_BASE}/${endpoint}.json`);
+  });
+
+  it('fetches poll ids from Algolia search sorted by date', async () => {
+    get.mockResolvedValueOnce({
+      hits: [
+        { objectID: '48322267' },
+        { objectID: '48302523' },
+      ],
+    });
+
+    await expect(getStoryIds('poll')).resolves.toEqual([48322267, 48302523]);
+    expect(get).toHaveBeenCalledWith(
+      `${HN_SEARCH_BASE}/search_by_date?tags=poll&hitsPerPage=100`,
+    );
   });
 
   it('returns an empty array when ids cannot be fetched', async () => {
