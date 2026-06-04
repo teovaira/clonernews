@@ -1,5 +1,5 @@
 import { get } from './client.js';
-import { HN_BASE } from '../constants.js';
+import { HN_BASE, HN_SEARCH_BASE } from '../constants.js';
 
 /**
  * @param {number} id
@@ -36,10 +36,19 @@ export async function getItemsKeepOrder(ids) {
 }
 
 /**
- * @param {'top'|'new'|'ask'|'show'|'job'} feed
+ * @param {'top'|'new'|'ask'|'show'|'job'|'poll'} feed
  * @returns {Promise<number[]>}  — ordered by HN (newest first for 'new', ranked for others)
  */
 export async function getStoryIds(feed) {
+  if (feed === 'poll') {
+    const data = await get(`${HN_SEARCH_BASE}/search_by_date?tags=poll&hitsPerPage=100`);
+    if (!data || !Array.isArray(data.hits)) return [];
+
+    return data.hits
+      .map((hit) => Number(hit.objectID))
+      .filter((id) => Number.isInteger(id));
+  }
+
   const endpoints = {
     top: 'topstories',
     new: 'newstories',
