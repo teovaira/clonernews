@@ -1,6 +1,6 @@
 import { getItems } from './items.js';
 
-/*
+/**
  * Fetches poll option items for a poll's parts array.
  * Returns items sorted by score descending.
  * @param {number[]} partIds

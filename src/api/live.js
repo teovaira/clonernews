@@ -29,7 +29,7 @@ async function poll() {
     }
 }
 
-/*
+/**
  * Starts polling /v0/updates every POLL_MS milliseconds.
  * First poll sets the baseline — does NOT dispatch event.
  * Subsequent polls: if new item IDs found (id > lastSeenMaxId),
@@ -45,7 +45,7 @@ export function startLiveUpdates() {
     intervalId = setInterval(poll, POLL_MS);
 }
 
-/*
+/**
  * Stops polling. Safe to call if never started.
  * @returns {void}
  */
