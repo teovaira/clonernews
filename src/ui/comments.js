@@ -91,7 +91,8 @@ export function renderComment(item, depth) {
     el.appendChild(header)
     el.appendChild(body)
 
-    if (item.kids?.length) {
+
+    if (item.kids?.length && depth < 3) {
         getItemsKeepOrder(item.kids).then(kids => {
             kids.forEach(kid => { if (kid) cacheItem(kid.id, kid) })
             const sorted = [...kids].sort((a, b) => {
