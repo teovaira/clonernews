@@ -113,7 +113,7 @@ export function initFeed() {
 /**
  * Switches to feedType. Resets state, clears #feed, fetches the new id list,
  * and renders the first page.
- * @param {'top'|'new'|'ask'|'show'|'job'} feedType
+ * @param {'top'|'new'|'ask'|'show'|'job'|'poll'} feedType
  * @returns {Promise<void>}
  */
 export async function switchFeed(feedType) {
@@ -179,8 +179,12 @@ export async function loadNextPage() {
   if (getState().currentFeed !== feedAtStart) return;
 
   const feed = document.getElementById('feed');
+  const visibleItems = feedAtStart === 'poll'
+    ? items.filter((item) => item.type === 'poll')
+    : items;
+
   if (feed) {
-    items.forEach((item, i) => {
+    visibleItems.forEach((item, i) => {
       // Rank is 1-based and continues across pages so numbering stays stable.
       feed.appendChild(renderStoryItem(item, start + i + 1));
     });
@@ -193,7 +197,7 @@ export async function loadNextPage() {
   // If the whole page was deleted items, nothing was appended so the sentinel
   // won't re-fire. Chain the next page automatically so the feed doesn't stall.
   const updated = getState();
-  if (items.length === 0 && updated.loadedCount < updated.allIds.length) {
+  if (visibleItems.length === 0 && updated.loadedCount < updated.allIds.length) {
     loadNextPage();
   }
 }
