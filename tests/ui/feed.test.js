@@ -81,6 +81,7 @@ function mountDom() {
       <button class="feed-tab" data-feed="ask">Ask</button>
       <button class="feed-tab" data-feed="show">Show</button>
       <button class="feed-tab" data-feed="job">Jobs</button>
+      <button class="feed-tab" data-feed="poll">Polls</button>
     </nav>
     <div id="live-banner" class="hidden"><span id="live-banner-text"></span></div>
     <div id="feed"></div>
@@ -240,6 +241,21 @@ describe('loadNextPage', () => {
     expect(document.querySelectorAll('#feed .story-item').length).toBe(2);
     expect(getState().loadedCount).toBe(2);
     expect(getState().loading).toBe(false);
+  });
+
+  it('renders only poll items when currentFeed is poll', async () => {
+    setState({ currentFeed: 'poll', allIds: [1, 2], loadedCount: 0, loading: false });
+    getPollOptions.mockResolvedValue([]);
+    getItems.mockResolvedValue([
+      { id: 1, type: 'story', title: 'One', by: 'a', time: 1 },
+      { id: 2, type: 'poll', title: 'Poll?', by: 'b', time: 1, parts: [] },
+    ]);
+
+    await loadNextPage();
+
+    const items = document.querySelectorAll('#feed .story-item');
+    expect(items.length).toBe(1);
+    expect(items[0].textContent.toLowerCase()).toContain('poll');
   });
 
   it('clears the loading flag even if the fetch rejects', async () => {
