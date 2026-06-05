@@ -8,7 +8,7 @@ live update notifications.
 
 ## Features
 
-- **Multiple feeds** — Top, New, Ask, Show and Jobs.
+- **Multiple feeds** — Top, New, Ask, Show, Jobs and Polls.
 - **Lazy loading** — posts load one page at a time as you scroll; the app never
   loads all posts at once.
 - **Newest-first ordering** — feeds and comments are ordered newest to oldest.
